@@ -28,6 +28,6 @@ public class Token {
     
     @Override
     public String toString(){
-        return type.toString();
+        return type.toString() + ":\t" + data;
     }
 }

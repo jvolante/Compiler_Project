@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package compilerproject.scanner;
 
 import java.io.FileNotFoundException;
@@ -21,7 +17,8 @@ public class CMinusScanner implements Scanner{
     
     private static final String WHITESPACE = "\r\n\t ";
     private static final String DIGITS = "0123456789";
-    private static final String LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    private static final String LETTERS = 
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     
     private PushbackReader in;
     private Token nextToken;
@@ -294,7 +291,7 @@ public class CMinusScanner implements Scanner{
     public static void main(String[] args){
         FileReader in = null;
         try {
-            String filename = "C:\\Users\\jvolante\\Downloads\\selectionSort.cpp";
+            String filename = "C:\\Users\\jvolante\\Downloads\\test.cpp";
             in = new FileReader(filename);
             
             Scanner scanner = new CMinusScanner(in);
@@ -305,14 +302,17 @@ public class CMinusScanner implements Scanner{
             }
             
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(CMinusScanner.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CMinusScanner.class.getName())
+                    .log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(CMinusScanner.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CMinusScanner.class.getName())
+                    .log(Level.SEVERE, null, ex);
         } finally {
             try {
                 in.close();
             } catch (IOException ex) {
-                Logger.getLogger(CMinusScanner.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(CMinusScanner.class.getName())
+                        .log(Level.SEVERE, null, ex);
             }
         }
         
