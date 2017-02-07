@@ -17,4 +17,17 @@ public class Token {
         this.type = type;
         this.data = data;
     }
+    
+    public TokenType getTokenType(){
+        return type;
+    }
+    
+    public String getData(){
+        return data;
+    }
+    
+    @Override
+    public String toString(){
+        return type.toString();
+    }
 }
