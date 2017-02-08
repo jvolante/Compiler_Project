@@ -1,4 +1,3 @@
-
 package compilerproject.scanner;
 
 import java.io.FileNotFoundException;
@@ -159,7 +158,8 @@ public class CMinusScanner implements Scanner{
                     if(current == '/'){
                         if(returnComments){
                             tokenNotFound = false;
-                            result = new Token(TokenType.COMMENT, WHITESPACE);
+                            result = new Token(TokenType.COMMENT, 
+                                               tokenData.toString());
                         } else {
                             // Clear token data
                             tokenData.delete(0, tokenData.length());
@@ -168,7 +168,17 @@ public class CMinusScanner implements Scanner{
                     }
                     break;
                 case DIGIT:
-                    if(!DIGITS.contains(Character.toString(current))){
+                    if (LETTERS.contains(Character.toString(current))){
+                        if(returnErrors){
+                            tokenNotFound = false;
+                            result = new Token(TokenType.ERROR, 
+                                               tokenData.toString());
+                        } else {
+                            // Clear token data
+                            tokenData.delete(0, tokenData.length());
+                            state = CMinusScannerState.START;
+                        }
+                    } else if(!DIGITS.contains(Character.toString(current))){
                         tokenData.deleteCharAt(tokenData.length() - 1);
                         in.unread(current);
                         
@@ -179,7 +189,17 @@ public class CMinusScanner implements Scanner{
                     }
                     break;
                 case IDENTIFIER:
-                    if(!LETTERS.contains(Character.toString(current))){
+                    if(DIGITS.contains(Character.toString(current))){
+                        if(returnErrors){
+                            tokenNotFound = false;
+                            result = new Token(TokenType.ERROR, 
+                                               tokenData.toString());
+                        } else {
+                            // Clear token data
+                            tokenData.delete(0, tokenData.length());
+                            state = CMinusScannerState.START;
+                        }
+                    } else if(!LETTERS.contains(Character.toString(current))){
                         
                         tokenData.deleteCharAt(tokenData.length() - 1);
                         in.unread(current);
