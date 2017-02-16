@@ -7,7 +7,7 @@ package compilerproject.scanner;
 
 /**
  *
- * @author hiker
+ * @author Jackson Volante
  */
 public enum TokenType {
     IF,
@@ -16,8 +16,6 @@ public enum TokenType {
     VOID,
     RETURN,
     WHILE,
-    BREAK,
-    CONTINUE,
     ASSIGN,
     PLUS,
     MINUS,
@@ -28,17 +26,13 @@ public enum TokenType {
     GREATERTHAN,
     LESSTHANEQ,
     GREATERTHANEQ,
-    OR,
-    AND,
-    NOT,
-    XOR,
+    NOTEQ,
     RPAREN,
     LPAREN,
     RSQBRACE,
     LSQBRACE,
     RBRACE,
     LBRACE,
-    COLON,
     SEMICOLON,
     COMMA,
     NUMBER,

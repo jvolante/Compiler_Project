@@ -7,7 +7,7 @@ package compilerproject.scanner;
 
 /**
  *
- * @author hiker
+ * @author Jackson Volante
  */
 public enum CMinusScannerState {
     START,
@@ -15,5 +15,11 @@ public enum CMinusScannerState {
     COMMENT_FIRST_STAR,
     COMMENT_INTERIOR,
     COMMENT_SECOND_STAR,
-    COMMENT_END_FORWARD_SLASH
+    COMMENT_END_FORWARD_SLASH,
+    DIGIT,
+    IDENTIFIER,
+    FOUND_GREATER_THAN,
+    FOUND_LESS_THAN,
+    FOUND_EQ,
+    FOUND_BANG
 }
