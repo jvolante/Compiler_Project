@@ -14,7 +14,6 @@ public enum TokenType {
     ELSE,
     INT,
     VOID,
-    FOR,
     RETURN,
     WHILE,
     BREAK,
