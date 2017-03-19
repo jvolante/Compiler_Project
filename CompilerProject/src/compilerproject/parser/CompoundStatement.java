@@ -12,7 +12,11 @@ import java.util.List;
  *
  * @author jvolante
  */
-public class FunctionDeclaration extends Declaration {
-    protected List<Parameter> params = new ArrayList<>();
-    CompoundStatement compoundStatement;
+class CompoundStatement extends Statement{
+    List<VariableDeclarations> localDeclarations = new ArrayList<>();
+    List<Statement> statements = new ArrayList<>();
+    
+    public CompoundStatement(){
+        type = StatementType.COMPOUND;
+    }
 }

@@ -5,14 +5,14 @@
  */
 package compilerproject.parser;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  *
  * @author jvolante
  */
-public class FunctionDeclaration extends Declaration {
-    protected List<Parameter> params = new ArrayList<>();
-    CompoundStatement compoundStatement;
+abstract class Statement {
+    protected StatementType type;
+    
+    public enum StatementType{
+        SIMPLE, COMPOUND, SELECTION, ITERATION
+    }
 }
