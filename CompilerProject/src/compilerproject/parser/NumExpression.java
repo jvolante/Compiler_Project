@@ -16,6 +16,9 @@ public class NumExpression extends Expression{
 
     int value;
     
+    public NumExpression (int value){
+        this.value = value;
+    }
     @Override
     public void print(BufferedWriter writer, String tabs) throws IOException {
         writer.write(tabs+value);
