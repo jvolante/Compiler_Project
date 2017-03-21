@@ -311,10 +311,10 @@ public class CMinusScanner implements Scanner{
     public static void main(String[] args){
         FileReader in = null;
         try {
-            String filename = "C:\\Users\\jvolante\\Downloads\\test.cpp";
+            String filename = "C:\\Users\\jvolante\\Downloads\\selectionSort.cpp";
             in = new FileReader(filename);
             
-            Scanner scanner = new CMinusScanner(in);
+            Scanner scanner = new CMinusLexer(in);
             
             Token next;
             while((next = scanner.getNextToken()) != null){
