@@ -5,10 +5,15 @@
  */
 package compilerproject.parser;
 
+import compilerproject.scanner.Token;
+
 /**
  *
  * @author jvolante
  */
 class Parameter {
-    
+    int num;
+    int []numArray;
+    boolean isArray;
+    Token id;
 }
