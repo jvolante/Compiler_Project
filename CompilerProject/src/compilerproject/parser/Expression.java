@@ -5,10 +5,13 @@
  */
 package compilerproject.parser;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+
 /**
  *
  * @author jtdeane
  */
-class Expression {
-    
+public abstract class Expression {
+    public abstract void print(BufferedWriter writer, String tabs) throws IOException;
 }

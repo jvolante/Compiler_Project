@@ -13,6 +13,6 @@ abstract class Statement {
     protected StatementType type;
     
     public enum StatementType{
-        SIMPLE, COMPOUND, SELECTION, ITERATION
+        EXPRESSION, COMPOUND, SELECTION, ITERATION, RETURN
     }
 }

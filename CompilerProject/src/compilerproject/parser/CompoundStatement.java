@@ -13,7 +13,7 @@ import java.util.List;
  * @author jvolante
  */
 class CompoundStatement extends Statement{
-    List<VariableDeclarations> localDeclarations = new ArrayList<>();
+    List<VariableDeclaration> localDeclarations = new ArrayList<>();
     List<Statement> statements = new ArrayList<>();
     
     public CompoundStatement(){

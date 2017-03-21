@@ -5,6 +5,7 @@
  */
 package compilerproject.parser;
 
+import compilerproject.scanner.Token;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +14,11 @@ import java.util.List;
  * @author jvolante
  */
 public class FunctionDeclaration extends Declaration {
+    protected Token identifier;
     protected List<Parameter> params = new ArrayList<>();
     CompoundStatement compoundStatement;
+    
+    public FunctionDeclaration(){
+        decType = DeclarationType.FUNCTION_DECLARATION;
+    }
 }

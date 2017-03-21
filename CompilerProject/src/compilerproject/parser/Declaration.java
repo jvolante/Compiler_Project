@@ -5,10 +5,17 @@
  */
 package compilerproject.parser;
 
+import compilerproject.scanner.Token;
+
 /**
  *
  * @author jvolante
  */
 public abstract class Declaration {
-    protected Type type;
+    protected DeclarationType decType;
+    protected Token type;
+    
+    public enum DeclarationType{
+        FUNCTION_DECLARATION, VARIABLE_DECLARATION
+    }
 }
