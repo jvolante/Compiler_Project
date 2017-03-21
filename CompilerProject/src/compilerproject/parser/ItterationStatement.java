@@ -5,6 +5,9 @@
  */
 package compilerproject.parser;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+
 /**
  *
  * @author jvolante
@@ -15,5 +18,12 @@ public class ItterationStatement extends Statement {
     
     public ItterationStatement(){
         type = StatementType.ITERATION;
+    }
+
+    @Override
+    public void print(BufferedWriter writer, String tabs) throws IOException {
+        writer.write(tabs+"while");
+        loopCondition.print(writer, tabs+"    ");
+        statement.print(writer, tabs+"    ");
     }
 }

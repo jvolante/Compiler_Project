@@ -5,6 +5,9 @@
  */
 package compilerproject.parser;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+
 /**
  *
  * @author jvolante
@@ -14,5 +17,11 @@ public class ReturnStatement extends Statement {
     
     public ReturnStatement(){
         type = StatementType.RETURN;
+    }
+
+    @Override
+    public void print(BufferedWriter writer, String tabs) throws IOException {
+        writer.write(tabs+"return");
+        returnExpression.print(writer, tabs+"    ");
     }
 }

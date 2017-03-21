@@ -5,6 +5,8 @@
  */
 package compilerproject.parser;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,5 +20,17 @@ class CompoundStatement extends Statement{
     
     public CompoundStatement(){
         type = StatementType.COMPOUND;
+    }
+
+    @Override
+    public void print(BufferedWriter writer, String tabs) throws IOException {
+        writer.write(tabs+"{\n");
+        for(VariableDeclaration vd : localDeclarations){
+            vd.print(writer, tabs+"    ");
+        }
+        for(Statement s : statements){
+            s.print(writer, tabs+"    ");
+        }
+        writer.write(tabs + "}\n");
     }
 }

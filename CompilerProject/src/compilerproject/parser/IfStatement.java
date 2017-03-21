@@ -5,6 +5,9 @@
  */
 package compilerproject.parser;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+
 /**
  *
  * @author jtdeane
@@ -23,5 +26,13 @@ public class IfStatement extends Statement {
         expr = express;
         thenStmt = stmt1;
         elseStmt = stmt2;
+    }
+
+    @Override
+    public void print(BufferedWriter writer, String tabs) throws IOException {
+        writer.write(tabs+"if");
+        expr.print(writer, tabs+"    ");
+        thenStmt.print(writer, tabs+"    ");
+        elseStmt.print(writer, tabs+"    ");
     }
 }

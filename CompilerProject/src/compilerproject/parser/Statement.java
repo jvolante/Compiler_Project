@@ -5,14 +5,19 @@
  */
 package compilerproject.parser;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+
 /**
  *
  * @author jvolante
  */
-abstract class Statement {
+public abstract class Statement {
     protected StatementType type;
     
     public enum StatementType{
         EXPRESSION, COMPOUND, SELECTION, ITERATION, RETURN
     }
+    
+    public abstract void print(BufferedWriter writer, String tabs) throws IOException;
 }

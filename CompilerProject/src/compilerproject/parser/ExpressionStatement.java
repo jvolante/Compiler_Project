@@ -5,6 +5,9 @@
  */
 package compilerproject.parser;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+
 /**
  *
  * @author jvolante
@@ -15,4 +18,11 @@ public class ExpressionStatement extends Statement {
     public ExpressionStatement(){
         type = StatementType.EXPRESSION;
     }
+
+    @Override
+    public void print(BufferedWriter writer, String tabs) throws IOException {
+        expr.print(writer, tabs);
+    }
+    
+    
 }
