@@ -17,16 +17,16 @@ public enum TokenType {
     RETURN,
     WHILE,
     ASSIGN,
-    PLUS,
-    MINUS,
-    MULTIPLY,
-    DIVIDE,
-    EQUALS,
-    LESSTHAN,
-    GREATERTHAN,
-    LESSTHANEQ,
-    GREATERTHANEQ,
-    NOTEQ,
+    PLUS (Group.ADDOP),
+    MINUS (Group.ADDOP),
+    MULTIPLY (Group.MULOP),
+    DIVIDE (Group.MULOP),
+    EQUALS (Group.RELOP),
+    LESSTHAN (Group.RELOP),
+    GREATERTHAN (Group.RELOP),
+    LESSTHANEQ (Group.RELOP),
+    GREATERTHANEQ (Group.RELOP),
+    NOTEQ (Group.RELOP),
     RPAREN,
     LPAREN,
     RSQBRACE,
@@ -38,5 +38,25 @@ public enum TokenType {
     NUMBER,
     IDENTIFIER,
     COMMENT,
-    ERROR
+    ERROR;
+
+    private Group group;
+
+    TokenType(Group group) {
+        this.group = group;
+    }
+    
+    TokenType() {
+        this.group = null;
+    }
+    
+    public boolean isInGroup(Group group) {
+        return this.group == group;
+    }
+
+    public enum Group {
+        RELOP,
+        ADDOP,
+        MULOP;
+    }
 }
