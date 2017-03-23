@@ -15,8 +15,9 @@ import java.io.IOException;
 public class ReturnStatement extends Statement {
     Expression returnExpression;
     
-    public ReturnStatement(){
+    public ReturnStatement(Expression e){
         type = StatementType.RETURN;
+        returnExpression = e;
     }
 
     @Override

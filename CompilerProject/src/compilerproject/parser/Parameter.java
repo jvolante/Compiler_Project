@@ -11,7 +11,7 @@ package compilerproject.parser;
  */
 class Parameter {
     int num;
-    int []numArray;
+    int[] numArray;
     boolean isArray;
     String id;
     
@@ -19,6 +19,7 @@ class Parameter {
         num = i;
         id = s;
         isArray = false;
+        numArray = null;
     }
     
     public Parameter(int []array, String s){

@@ -19,9 +19,5 @@ public abstract class Statement {
         EXPRESSION, COMPOUND, SELECTION, ITERATION, RETURN
     }
     
-    public Statement(){
-        
-    }
-    
     public abstract void print(BufferedWriter writer, String tabs) throws IOException;
 }

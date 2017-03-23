@@ -14,11 +14,14 @@ import java.util.List;
  * @author jvolante
  */
 public class FunctionDeclaration extends Declaration {
-    protected Token identifier;
+    protected String identifier;
     protected List<Parameter> params = new ArrayList<>();
     CompoundStatement compoundStatement;
     
-    public FunctionDeclaration(){
+    public FunctionDeclaration(String id, List<Parameter> p, CompoundStatement cs){
         decType = DeclarationType.FUNCTION_DECLARATION;
+        identifier = id;
+        params = p;
+        compoundStatement = cs;
     }
 }

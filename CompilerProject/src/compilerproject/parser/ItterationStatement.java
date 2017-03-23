@@ -16,8 +16,10 @@ public class ItterationStatement extends Statement {
     Expression loopCondition;
     Statement statement;
     
-    public ItterationStatement(){
+    public ItterationStatement(Expression e, Statement s){
         type = StatementType.ITERATION;
+        loopCondition = e;
+        statement = s;
     }
 
     @Override

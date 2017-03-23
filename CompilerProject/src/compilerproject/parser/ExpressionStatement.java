@@ -15,8 +15,9 @@ import java.io.IOException;
 public class ExpressionStatement extends Statement {
     Expression expr;
     
-    public ExpressionStatement(){
+    public ExpressionStatement(Expression e){
         type = StatementType.EXPRESSION;
+        expr = e;
     }
 
     @Override

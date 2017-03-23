@@ -15,10 +15,13 @@ import java.io.BufferedWriter;
 class VariableDeclaration extends Declaration{
     protected boolean isArray;
     protected long numElements;
-    protected Token identifier;
+    protected String identifier;
     
-    public VariableDeclaration(){
+    public VariableDeclaration(boolean isArray, long numElements, String id){
         decType = DeclarationType.VARIABLE_DECLARATION;
+        this.isArray = isArray;
+        this.numElements = numElements;
+        this.identifier = id;
     }
 
     void print(BufferedWriter writer, String string) {

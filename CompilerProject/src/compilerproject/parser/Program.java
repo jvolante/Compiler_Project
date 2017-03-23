@@ -15,7 +15,7 @@ import java.util.List;
 public class Program {
     List<Declaration> declarations = new ArrayList<>();
     
-    public Program(Declaration decl){
-        declarations.add(decl);
+    public Program(List<Declaration> decl){
+        declarations = decl;
     }
 }
