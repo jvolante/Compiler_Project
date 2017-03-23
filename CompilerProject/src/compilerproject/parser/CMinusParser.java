@@ -123,13 +123,43 @@ public class CMinusParser implements Parser{
         return new CompoundStatement(localDeclarations, statements);
     }
     
-    private List<VariableDeclaration> parseLocalDeclarations(){
+    private List<VariableDeclaration> parseLocalDeclarations() throws ParseException, IOException{
         List<VariableDeclaration> declarations = new ArrayList<>();
         while(current.getTokenType() == TokenType.INT){
             declarations.add(parseVariableDeclaration());
         }
         
         return declarations;
+    }
+    
+    private List<Statement> parseStatementList(){
+        List<Statement> statements = new ArrayList<>();
+        while(current.getTokenType() == TokenType.SEMICOLON ||
+              current.getTokenType() == TokenType.LPAREN ||
+              current.getTokenType() == TokenType.NUMBER ||
+              current.getTokenType() == TokenType.IDENTIFIER ||
+              current.getTokenType() == TokenType.IF ||
+              current.getTokenType() == TokenType.WHILE ||
+              current.getTokenType() == TokenType.RETURN){
+            
+            statements.add(parseStatement());
+        }
+        return statements;
+    }
+    
+    private VariableDeclaration parseVariableDeclaration() throws ParseException, IOException{
+        matchToken(TokenType.INT);
+        String id = matchToken(TokenType.IDENTIFIER);
+        boolean isArray = false;
+        int numElements = 0;
+        if(current.getTokenType() == TokenType.LBRACE){
+            matchToken(TokenType.LBRACE);
+            isArray = true;
+            numElements = Integer.parseInt(matchToken(TokenType.NUMBER));
+            matchToken(TokenType.RBRACE);
+        }
+        
+        return new VariableDeclaration(isArray, numElements, id);
     }
     
     public static void main(String[] args){
