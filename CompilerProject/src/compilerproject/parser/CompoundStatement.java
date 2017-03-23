@@ -7,6 +7,7 @@ package compilerproject.parser;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class CompoundStatement extends Statement{
     }
 
     @Override
-    public void print(BufferedWriter writer, String tabs) throws IOException {
+    public void print(PrintWriter writer, String tabs) throws IOException {
         writer.write(tabs+"{\n");
         for(VariableDeclaration vd : localDeclarations){
             vd.print(writer, tabs+"    ");

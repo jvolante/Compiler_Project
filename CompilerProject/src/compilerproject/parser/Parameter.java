@@ -7,6 +7,7 @@ package compilerproject.parser;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  *
@@ -31,7 +32,7 @@ class Parameter {
         isArray = true;
     }
 
-    void print(BufferedWriter writer, String tabs) throws IOException{
+    void print(PrintWriter writer, String tabs) throws IOException{
         if(isArray){
             writer.write(tabs + "{ ");
             for(int i : numArray){

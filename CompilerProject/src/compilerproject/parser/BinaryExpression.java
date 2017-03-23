@@ -8,6 +8,7 @@ package compilerproject.parser;
 import compilerproject.scanner.Token;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  *
@@ -28,7 +29,8 @@ public class BinaryExpression extends Expression{
         op = o;
     }
     
-    public void print(BufferedWriter writer, String tabs) throws IOException{
+    @Override
+    public void print(PrintWriter writer, String tabs) throws IOException{
         writer.write(tabs+getString(op));
         left.print(writer, tabs+"    ");
         right.print(writer, tabs+ "    ");

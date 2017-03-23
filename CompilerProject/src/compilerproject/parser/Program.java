@@ -5,6 +5,9 @@
  */
 package compilerproject.parser;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,5 +20,11 @@ public class Program {
     
     public Program(List<Declaration> decl){
         declarations = decl;
+    }
+    
+    public void print(PrintWriter writer, String tabs) throws IOException{
+        for(Declaration d : declarations){
+            d.print(writer, tabs);
+        }
     }
 }

@@ -7,6 +7,7 @@ package compilerproject.parser;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  *
@@ -19,7 +20,7 @@ public class NumExpression extends Expression{
         this.value = value;
     }
     @Override
-    public void print(BufferedWriter writer, String tabs) throws IOException {
+    public void print(PrintWriter writer, String tabs) throws IOException {
         writer.write(tabs+value);
     }
     

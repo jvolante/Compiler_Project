@@ -7,6 +7,7 @@ package compilerproject.parser;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 /**
@@ -23,7 +24,7 @@ public class CallExpression extends Expression{
     }
     
     @Override
-    public void print(BufferedWriter writer, String tabs) throws IOException {
+    public void print(PrintWriter writer, String tabs) throws IOException {
         writer.write(tabs+id);
         for (Expression arg : args){
             arg.print(writer, tabs+"    ");

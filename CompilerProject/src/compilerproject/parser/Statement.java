@@ -7,6 +7,7 @@ package compilerproject.parser;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  *
@@ -19,5 +20,5 @@ public abstract class Statement {
         EXPRESSION, COMPOUND, SELECTION, ITERATION, RETURN
     }
     
-    public abstract void print(BufferedWriter writer, String tabs) throws IOException;
+    public abstract void print(PrintWriter writer, String tabs) throws IOException;
 }

@@ -5,10 +5,61 @@
  */
 package compilerproject.parser;
 
+import compilerproject.scanner.CMinusLexer;
+import compilerproject.scanner.CMinusScanner;
+import compilerproject.scanner.Scanner;
+import compilerproject.scanner.Token;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author jvolante
  */
-public class CMinusParser {
+public class CMinusParser implements Parser{
+
+    Scanner scanner;
     
+    public CMinusParser(Scanner s){
+        
+    }
+    
+    @Override
+    public Program parse() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public static void main(String[] args){
+        FileReader in = null;
+        try {
+            String filename = "C:\\Users\\jvolante\\Downloads\\selectionSort.cpp";
+            in = new FileReader(filename);
+            
+            Scanner scanner = new CMinusLexer(in);
+            Parser parser = new CMinusParser(scanner);
+            
+            parser.parse().print(new PrintWriter(System.out), "");
+            
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(CMinusScanner.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(CMinusScanner.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                in.close();
+            } catch (IOException ex) {
+                Logger.getLogger(CMinusScanner.class.getName())
+                        .log(Level.SEVERE, null, ex);
+            }
+        }
+        
+    }
+    }
 }

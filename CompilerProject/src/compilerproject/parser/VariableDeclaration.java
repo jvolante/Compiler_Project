@@ -7,6 +7,7 @@ package compilerproject.parser;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  *
@@ -24,7 +25,8 @@ class VariableDeclaration extends Declaration{
         this.identifier = id;
     }
 
-    public void print(BufferedWriter writer, String tabs) throws IOException{
+    @Override
+    public void print(PrintWriter writer, String tabs) throws IOException{
         writer.write(tabs + identifier);
         if(isArray){
             writer.write(" [ " + numElements + " ]");

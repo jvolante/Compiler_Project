@@ -8,6 +8,7 @@ package compilerproject.parser;
 import compilerproject.scanner.Token;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class FunctionDeclaration extends Declaration {
     }
 
     @Override
-    public void print(BufferedWriter writer, String tabs) throws IOException {
+    public void print(PrintWriter writer, String tabs) throws IOException {
         writer.write(tabs + identifier + "\n");
         for(Parameter p : params){
             p.print(writer, tabs + "    ");

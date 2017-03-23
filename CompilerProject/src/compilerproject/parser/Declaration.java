@@ -6,8 +6,8 @@
 package compilerproject.parser;
 
 import compilerproject.scanner.Token;
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  *
@@ -21,5 +21,5 @@ public abstract class Declaration {
         FUNCTION_DECLARATION, VARIABLE_DECLARATION
     }
     
-    public abstract void print(BufferedWriter writer, String tabs) throws IOException;
+    public abstract void print(PrintWriter writer, String tabs) throws IOException;
 }
