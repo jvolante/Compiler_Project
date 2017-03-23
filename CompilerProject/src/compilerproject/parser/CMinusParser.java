@@ -226,11 +226,11 @@ public class CMinusParser implements Parser{
 
         Expression lhs = parseTerm();
 
-        while (isAddop (current.getTokenType())) {
+        while (current.getTokenType().isInGroup(TokenType.Group.ADDOP)) {
             Token oldToken = advanceToken();
             Expression rhs = parseTerm();
                 // make lhs the result, so set up for next iter
-            lhs = createBinopExpr(oldToken.getTokenType(), lhs, rhs);               
+            lhs = new BinaryExpression(lhs, rhs, oldToken.getTokenType());               
         }
 
         return lhs;
@@ -239,17 +239,17 @@ public class CMinusParser implements Parser{
     private Expression parseTerm() throws IOException, ParseException {
         Expression lhs = parseFactor();
 
-        while (isMulop (current.getTokenType())) {
+        while (current.getTokenType().isInGroup(TokenType.Group.MULOP)) {
             Token oldToken = advanceToken();
             Expression rhs = parseFactor();
                 // make lhs the result, so set up for next iter
-            lhs = createBinopExpr (oldToken.getTokenType(), lhs, rhs);               
+            lhs = new BinaryExpression(lhs, rhs, oldToken.getTokenType());               
         }
 
         return lhs;   
     }
 
-    private Statement parseStatement() {
+    private Statement parseStatement() throws ParseException, IOException {
         switch (current.getTokenType()) {
             case NUMBER:
             case LPAREN:
@@ -266,8 +266,7 @@ public class CMinusParser implements Parser{
                 Statement returnStatement = parseReturnStatement ();
                 return returnStatement;
             default:
-                logParseError();
-                return null;
+                throw new ParseException("Unexpected token, " + current);
         }        
     }
 
@@ -318,7 +317,7 @@ public class CMinusParser implements Parser{
         } else if (current.getTokenType() == TokenType.SEMICOLON) {
             stmt = new ReturnStatement(); 
         } else {
-            return logParseError();
+            throw new ParseException("Unexpected token, " + current);
         }
         matchToken (TokenType.SEMICOLON);
         return stmt;    
@@ -338,20 +337,25 @@ public class CMinusParser implements Parser{
                 Expression expressionPrime = parseExpressionPrime ();
                 return expressionPrime;
             default:
-                logParseError();
-                return null;
+                throw new ParseException("Unexpected token, " + current);
         }    
     }
 
-    private Expression parseSimpleExpression() {
+    private Expression parseSimpleExpression() throws IOException {
         Expression addExpression = parseAdditiveExpressionPrime();
-        if(current.getTokenType() == TokenType.RELOP){
-            
+        
+        if(current.getTokenType().isInGroup(TokenType.Group.RELOP)){
+            advanceToken();
+            Expression addExp = parseAdditiveExpression();
         }
         return addExpression;
     }
 
     private Expression parseExpressionPrime() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private Expression parseAdditiveExpression() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
