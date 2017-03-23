@@ -15,13 +15,17 @@ import java.io.IOException;
 public class AssignExpression extends Expression {
     String id;
     Expression value;
+    
+    public AssignExpression(String ident, Expression v){
+        id = ident;
+        value = v;
+    }
 
     @Override
     public void print(BufferedWriter writer, String tabs) throws IOException {
         writer.write(tabs+"=");
         writer.write(tabs+"    "+id);
         value.print(writer, "    "+tabs);
-    }
-    
+    }   
     
 }

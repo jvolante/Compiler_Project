@@ -14,4 +14,16 @@ class Parameter {
     int []numArray;
     boolean isArray;
     String id;
+    
+    public Parameter(int i, String s){
+        num = i;
+        id = s;
+        isArray = false;
+    }
+    
+    public Parameter(int []array, String s){
+        numArray = array;
+        id = s;
+        isArray = true;
+    }
 }

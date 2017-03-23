@@ -14,4 +14,8 @@ import java.util.List;
  */
 public class Program {
     List<Declaration> declarations = new ArrayList<>();
+    
+    public Program(Declaration decl){
+        declarations.add(decl);
+    }
 }

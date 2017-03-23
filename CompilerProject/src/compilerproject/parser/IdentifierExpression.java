@@ -14,6 +14,10 @@ import java.io.IOException;
  */
 public class IdentifierExpression extends Expression{
     String id;
+    
+    public IdentifierExpression(String ident){
+        id = ident;
+    }
 
     @Override
     public void print(BufferedWriter writer, String tabs) throws IOException {

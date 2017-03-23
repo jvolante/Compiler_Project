@@ -6,6 +6,7 @@
 package compilerproject.parser;
 
 import compilerproject.scanner.Token;
+import java.io.BufferedWriter;
 
 /**
  *
@@ -18,5 +19,9 @@ class VariableDeclaration extends Declaration{
     
     public VariableDeclaration(){
         decType = DeclarationType.VARIABLE_DECLARATION;
+    }
+
+    void print(BufferedWriter writer, String string) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

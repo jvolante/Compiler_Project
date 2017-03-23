@@ -13,7 +13,6 @@ import java.io.IOException;
  * @author jvolante
  */
 public class NumExpression extends Expression{
-
     int value;
     
     public NumExpression (int value){
