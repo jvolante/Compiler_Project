@@ -5,12 +5,17 @@
  */
 package compilerproject.parser;
 
-import java.io.IOException;
-
 /**
  *
  * @author jvolante
  */
-public interface Parser {
-    public Program parse() throws IOException;
+public class ParseException extends Exception{
+    String message;
+    public ParseException(String message){
+        this.message = message;
+    }
+    
+    public String toString(){
+        return message;
+    }
 }

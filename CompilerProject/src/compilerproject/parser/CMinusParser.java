@@ -9,6 +9,7 @@ import compilerproject.scanner.CMinusLexer;
 import compilerproject.scanner.CMinusScanner;
 import compilerproject.scanner.Scanner;
 import compilerproject.scanner.Token;
+import compilerproject.scanner.TokenType;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -24,13 +25,14 @@ import java.util.logging.Logger;
 public class CMinusParser implements Parser{
 
     Scanner scanner;
+    Token current;
     
     public CMinusParser(Scanner s){
         
     }
     
     @Override
-    public Program parse() {
+    public Program parse() throws IOException{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
@@ -61,5 +63,15 @@ public class CMinusParser implements Parser{
         }
         
     }
+    
+    private void advanceToken() throws IOException{
+        current = scanner.getNextToken();
+    }
+    
+    private void matchToken(TokenType tt) throws ParseException, IOException{
+        if(current.getTokenType() != tt){
+            throw new ParseException("Expected Token " + tt + " got " + current);
+        }
+        advanceToken();
     }
 }
