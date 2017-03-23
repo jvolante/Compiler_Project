@@ -6,6 +6,8 @@
 package compilerproject.parser;
 
 import compilerproject.scanner.Token;
+import java.io.BufferedWriter;
+import java.io.IOException;
 
 /**
  *
@@ -18,4 +20,6 @@ public abstract class Declaration {
     public enum DeclarationType{
         FUNCTION_DECLARATION, VARIABLE_DECLARATION
     }
+    
+    public abstract void print(BufferedWriter writer, String tabs) throws IOException;
 }

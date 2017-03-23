@@ -5,8 +5,8 @@
  */
 package compilerproject.parser;
 
-import compilerproject.scanner.Token;
 import java.io.BufferedWriter;
+import java.io.IOException;
 
 /**
  *
@@ -24,7 +24,11 @@ class VariableDeclaration extends Declaration{
         this.identifier = id;
     }
 
-    void print(BufferedWriter writer, String string) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void print(BufferedWriter writer, String tabs) throws IOException{
+        writer.write(tabs + identifier);
+        if(isArray){
+            writer.write(" [ " + numElements + " ]");
+        }
+        writer.write("\n");
     }
 }

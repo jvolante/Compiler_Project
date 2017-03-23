@@ -5,6 +5,9 @@
  */
 package compilerproject.parser;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+
 /**
  *
  * @author jvolante
@@ -22,9 +25,21 @@ class Parameter {
         numArray = null;
     }
     
-    public Parameter(int []array, String s){
+    public Parameter(int[] array, String s){
         numArray = array;
         id = s;
         isArray = true;
+    }
+
+    void print(BufferedWriter writer, String tabs) throws IOException{
+        if(isArray){
+            writer.write(tabs + "{ ");
+            for(int i : numArray){
+                writer.write(i + ", ");
+            }
+            writer.write("}\n");
+        } else {
+            writer.write(tabs + num + "\n");
+        }
     }
 }

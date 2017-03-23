@@ -6,6 +6,8 @@
 package compilerproject.parser;
 
 import compilerproject.scanner.Token;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,4 +26,14 @@ public class FunctionDeclaration extends Declaration {
         params = p;
         compoundStatement = cs;
     }
+
+    @Override
+    public void print(BufferedWriter writer, String tabs) throws IOException {
+        writer.write(tabs + identifier + "\n");
+        for(Parameter p : params){
+            p.print(writer, tabs + "    ");
+        }
+        compoundStatement.print(writer, tabs+"    ");
+    }
+    
 }
