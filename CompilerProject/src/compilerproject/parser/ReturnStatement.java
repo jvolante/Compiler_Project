@@ -20,6 +20,10 @@ public class ReturnStatement extends Statement {
         type = StatementType.RETURN;
         returnExpression = e;
     }
+    
+    public ReturnStatement(){
+        this(null);
+    }
 
     @Override
     public void print(PrintWriter writer, String tabs) throws IOException {

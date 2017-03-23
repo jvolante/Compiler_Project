@@ -10,7 +10,6 @@ import compilerproject.scanner.CMinusScanner;
 import compilerproject.scanner.Scanner;
 import compilerproject.scanner.Token;
 import compilerproject.scanner.TokenType;
-import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -161,8 +160,10 @@ public class CMinusParser implements Parser{
         
     }
     
-    private void advanceToken() throws IOException{
+    private Token advanceToken() throws IOException{
+        Token old = current;
         current = scanner.getNextToken();
+        return old;
     }
     
     private String matchToken(TokenType tt) throws ParseException, IOException{
@@ -174,31 +175,28 @@ public class CMinusParser implements Parser{
         return data;
     }
     // Given in PPT
-    private Expression parseFactor () {
-        switch (currentToken.getTokenType()) {
+    private Expression parseFactor () throws ParseException, IOException {
+        switch (current.getTokenType()) {
             case LPAREN:
                 advanceToken();
                 Expression returnExpr = parseBinaryExpression ();
                 matchToken(TokenType.RPAREN);
                 return returnExpr;
             case IDENTIFIER:
-                Token oldToken = advanceToken();
-                return createIdentExpr(oldToken);
+                return new IdentifierExpression(matchToken(TokenType.IDENTIFIER));
             case NUMBER:
-                Token oldToken = advanceToken();
-                return createNumExpr(oldToken);
+                return new NumExpression(Integer.parseInt(matchToken(TokenType.NUMBER)));
             default:
-                logParseError();
-                return null;
+                throw new ParseException("Got unexpected token while parsing factor: " + current);
         }
     }
     
     // Given in PPT
-    private Expression parseBinaryExpression () {
+    private Expression parseBinaryExpression () throws IOException, ParseException {
 
         Expression lhs = parseTerm();
 
-        while (isAddop (currentToken.getTokenType())) {
+        while (isAddop (current.getTokenType())) {
             Token oldToken = advanceToken();
             Expression rhs = parseTerm();
                 // make lhs the result, so set up for next iter
@@ -208,10 +206,10 @@ public class CMinusParser implements Parser{
         return lhs;
     }
 
-    private Expression parseTerm() {
+    private Expression parseTerm() throws IOException, ParseException {
         Expression lhs = parseFactor();
 
-        while (isMulop (currentToken.getTokenType())) {
+        while (isMulop (current.getTokenType())) {
             Token oldToken = advanceToken();
             Expression rhs = parseFactor();
                 // make lhs the result, so set up for next iter
@@ -222,7 +220,7 @@ public class CMinusParser implements Parser{
     }
 
     private Statement parseStatement() {
-        switch (currentToken.getTokenType()) {
+        switch (current.getTokenType()) {
             case NUMBER:
             case LPAREN:
             case IDENTIFIER:
@@ -244,7 +242,7 @@ public class CMinusParser implements Parser{
     }
 
     // Given in PPT
-    private Statement parseIfStatement () {
+    private Statement parseIfStatement () throws ParseException, IOException {
         matchToken (TokenType.IF);
         matchToken (TokenType.LPAREN);
         Expression ifExpr = parseExpression();
@@ -252,8 +250,8 @@ public class CMinusParser implements Parser{
         Statement thenStmt = parseStatement();
         Statement elseStmt = null;    
 
-        if (currentToken.getTokenType() == TokenType.ELSE) {
-            AdvanceToken();
+        if (current.getTokenType() == TokenType.ELSE) {
+            advanceToken();
             elseStmt = parseStatement();
         }
 
@@ -261,14 +259,14 @@ public class CMinusParser implements Parser{
         return returnStmt;
     }
     
-    private Statement parseExprStatement() {
+    private Statement parseExprStatement() throws ParseException, IOException {
         Expression exprStmt = parseExpression();
         matchToken (TokenType.SEMICOLON);
         Statement stmt = new ExpressionStatement(exprStmt);
         return stmt;
     }
     
-    private Statement parseIterationStatement() {
+    private Statement parseIterationStatement() throws ParseException, IOException {
         matchToken (TokenType.WHILE);
         matchToken (TokenType.LPAREN);       
         Expression whileExpr = parseExpression();
@@ -278,17 +276,17 @@ public class CMinusParser implements Parser{
         return whileStmt;
     }    
 
-    private Statement parseReturnStatement() {
+    private Statement parseReturnStatement() throws ParseException, IOException {
         Statement stmt;
         matchToken (TokenType.RETURN);
-        if (currentToken.getTokenType() == TokenType.NUMBER |
-                currentToken.getTokenType() == TokenType.LPAREN |
-                currentToken.getTokenType() == TokenType.IDENTIFIER) {
+        if (current.getTokenType() == TokenType.NUMBER ||
+                current.getTokenType() == TokenType.LPAREN ||
+                current.getTokenType() == TokenType.IDENTIFIER) {
             Expression retExpr = parseExpression();
-            AdvanceToken();
+            advanceToken();
             stmt = new ReturnStatement(retExpr);            
-        } else if (currentToken.getTokenType() == TokenType.SEMICOLON) {
-            stmt = new ReturntStatement(); 
+        } else if (current.getTokenType() == TokenType.SEMICOLON) {
+            stmt = new ReturnStatement(); 
         } else {
             return logParseError();
         }
@@ -296,11 +294,10 @@ public class CMinusParser implements Parser{
         return stmt;    
     }
 
-    private Expression parseExpression() {
-        switch (currentToken.getTokenType()) {
+    private Expression parseExpression() throws ParseException, IOException {
+        switch (current.getTokenType()) {
             case NUMBER:
-                Expression simpleExpresion = parseSimpleExpression ();
-                return simpleExpression;
+                return parseSimpleExpression ();
             case LPAREN:
                 matchToken (TokenType.LPAREN);
                 parseExpression();
@@ -318,7 +315,7 @@ public class CMinusParser implements Parser{
 
     private Expression parseSimpleExpression() {
         Expression addExpression = parseAdditiveExpressionPrime();
-        if(currentToken.getTokenType() == TokenType.RELOP){
+        if(current.getTokenType() == TokenType.RELOP){
             
         }
         return addExpression;
