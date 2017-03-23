@@ -6,6 +6,7 @@
 package compilerproject.parser;
 
 import compilerproject.scanner.Token;
+import compilerproject.scanner.TokenType;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -29,6 +30,37 @@ public class BinaryExpression extends Expression{
         op = o;
     }
     
+    public BinaryExpression(Expression l, Expression r, TokenType t) throws ParseException{
+        this(l, r, getOpType(t));
+    }
+    
+    private static OpType getOpType(TokenType t) throws ParseException{
+        switch(t){
+            case PLUS:
+                return OpType.PLUS;
+            case MINUS:
+                return OpType.MINUS;
+            case GREATERTHAN:
+                return OpType.GT;
+            case LESSTHAN:
+                return OpType.LT;
+            case GREATERTHANEQ:
+                return OpType.GTEQ;
+            case LESSTHANEQ:
+                return OpType.LTEQ;
+            case NOTEQ:
+                return OpType.NEQ;
+            case EQUALS:
+                return OpType.EQ;
+            case MULTIPLY:
+                return OpType.MUL;
+            case DIVIDE:
+                return OpType.DIV;
+            default:
+                throw new ParseException("Unexpected TokenType: " + t);
+        }
+    }
+    
     @Override
     public void print(PrintWriter writer, String tabs) throws IOException{
         writer.write(tabs+getString(op));
@@ -36,7 +68,7 @@ public class BinaryExpression extends Expression{
         right.print(writer, tabs+ "    ");
     }
     
-    private String getString(OpType op){
+    private static String getString(OpType op){
         switch(op){
             case PLUS:
                 return "+";

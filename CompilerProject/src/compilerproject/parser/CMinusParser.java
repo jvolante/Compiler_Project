@@ -132,7 +132,7 @@ public class CMinusParser implements Parser{
         return declarations;
     }
     
-    private List<Statement> parseStatementList(){
+    private List<Statement> parseStatementList() throws ParseException, IOException{
         List<Statement> statements = new ArrayList<>();
         while(current.getTokenType() == TokenType.SEMICOLON ||
               current.getTokenType() == TokenType.LPAREN ||
