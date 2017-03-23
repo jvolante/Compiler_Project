@@ -6,6 +6,7 @@
 package compilerproject.parser;
 
 import compilerproject.scanner.Token;
+import compilerproject.scanner.TokenType;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -21,11 +22,25 @@ public class FunctionDeclaration extends Declaration {
     protected List<Parameter> params = new ArrayList<>();
     CompoundStatement compoundStatement;
     
-    public FunctionDeclaration(String id, List<Parameter> p, CompoundStatement cs){
+    public FunctionDeclaration(DataType t, String id, List<Parameter> p, CompoundStatement cs){
         decType = DeclarationType.FUNCTION_DECLARATION;
         identifier = id;
         params = p;
         compoundStatement = cs;
+        type = t;
+    }
+    
+    public FunctionDeclaration(Token t, String id, List<Parameter> p, CompoundStatement cs){
+        decType = DeclarationType.FUNCTION_DECLARATION;
+        identifier = id;
+        params = p;
+        compoundStatement = cs;
+        
+        if(t.getTokenType() == TokenType.INT){
+            type = DataType.INT;
+        } else {
+            type = DataType.VOID;
+        }
     }
 
     @Override

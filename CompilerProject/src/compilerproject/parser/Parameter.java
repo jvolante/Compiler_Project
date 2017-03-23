@@ -13,34 +13,20 @@ import java.io.PrintWriter;
  *
  * @author jvolante
  */
-class Parameter {
-    int num;
-    int[] numArray;
+public class Parameter {
     boolean isArray;
     String id;
     
-    public Parameter(int i, String s){
-        num = i;
-        id = s;
-        isArray = false;
-        numArray = null;
-    }
-    
-    public Parameter(int[] array, String s){
-        numArray = array;
-        id = s;
-        isArray = true;
+    public Parameter(boolean isArray, String id){
+        this.id = id;
+        this.isArray = isArray;
     }
 
     void print(PrintWriter writer, String tabs) throws IOException{
+        writer.write(tabs + "int " + id);
         if(isArray){
-            writer.write(tabs + "{ ");
-            for(int i : numArray){
-                writer.write(i + ", ");
-            }
-            writer.write("}\n");
-        } else {
-            writer.write(tabs + num + "\n");
+            writer.write(" [  ]");
         }
+        writer.write("\n");
     }
 }

@@ -15,7 +15,11 @@ import java.io.PrintWriter;
  */
 public abstract class Declaration {
     protected DeclarationType decType;
-    protected Token type;
+    protected DataType type;
+
+    public static enum DataType {
+        INT, VOID
+    }
     
     public enum DeclarationType{
         FUNCTION_DECLARATION, VARIABLE_DECLARATION

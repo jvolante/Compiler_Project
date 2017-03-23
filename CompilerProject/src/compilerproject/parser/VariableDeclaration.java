@@ -13,7 +13,7 @@ import java.io.PrintWriter;
  *
  * @author jvolante
  */
-class VariableDeclaration extends Declaration{
+public class VariableDeclaration extends Declaration{
     protected boolean isArray;
     protected long numElements;
     protected String identifier;
