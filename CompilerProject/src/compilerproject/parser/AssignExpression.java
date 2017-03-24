@@ -14,10 +14,14 @@ import java.io.PrintWriter;
  * @author jvolante
  */
 public class AssignExpression extends Expression {
-    String id;
+    IdentifierExpression id;
     Expression value;
     
     public AssignExpression(String ident, Expression v){
+        this(new IdentifierExpression(ident), v);
+    }
+    
+    public AssignExpression(IdentifierExpression ident, Expression v){
         id = ident;
         value = v;
     }

@@ -12,5 +12,5 @@ import java.io.IOException;
  * @author jvolante
  */
 public interface Parser {
-    public Program parse() throws IOException;
+    public Program parse() throws IOException, ParseException;
 }

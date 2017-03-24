@@ -15,7 +15,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,13 +32,18 @@ public class CMinusParser implements Parser{
     Token current;
     Stack<Token> pushback = new Stack<>();
     
-    public CMinusParser(Scanner s){
+    public CMinusParser(Scanner s) throws IOException{
         scanner = s;
+        current = s.getNextToken();
     }
     
     @Override
-    public Program parse() throws IOException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Program parse() throws IOException, ParseException{
+        List<Declaration> decs = new ArrayList<>();
+        while(current != null){
+            decs.add(parseDeclaration());
+        }
+        return new Program(decs);
     }
     
     private Declaration parseDeclaration() throws ParseException, IOException{
@@ -49,10 +56,10 @@ public class CMinusParser implements Parser{
                 matchToken(TokenType.INT);
                 String id = matchToken(TokenType.IDENTIFIER);
                 switch(current.getTokenType()){
-                    case LBRACE:
-                        matchToken(TokenType.LBRACE);
+                    case LSQBRACE:
+                        matchToken(TokenType.LSQBRACE);
                         d = new VariableDeclaration(true, Long.parseLong(matchToken(TokenType.NUMBER)), id);
-                        matchToken(TokenType.RBRACE);
+                        matchToken(TokenType.RSQBRACE);
                         matchToken(TokenType.SEMICOLON);
                         break;
                     case SEMICOLON:
@@ -70,6 +77,7 @@ public class CMinusParser implements Parser{
                     default:
                         throw new ParseException("Unexpected Token while parsing declaration: " + current);
                 }
+                break;
             default:
                 throw new ParseException("Unexpected Token while parsing declaration: " + current);
         }
@@ -91,7 +99,7 @@ public class CMinusParser implements Parser{
     private List<Parameter> parseParameters() throws ParseException, IOException{
         List<Parameter> params = new ArrayList<>();
         
-        if(current.getTokenType() != TokenType.IDENTIFIER){
+        if(current.getTokenType() == TokenType.INT){
             params.add(parseParameter());
             while(current.getTokenType() == TokenType.COMMA){
                 matchToken(TokenType.COMMA);
@@ -107,9 +115,9 @@ public class CMinusParser implements Parser{
         String id = matchToken(TokenType.IDENTIFIER);
         
         boolean isArray = false;
-        if(current.getTokenType() == TokenType.LBRACE){
-            matchToken(TokenType.LBRACE);
-            matchToken(TokenType.RBRACE);
+        if(current.getTokenType() == TokenType.LSQBRACE){
+            matchToken(TokenType.LSQBRACE);
+            matchToken(TokenType.RSQBRACE);
             isArray = true;
         }
         
@@ -117,10 +125,10 @@ public class CMinusParser implements Parser{
     }
     
     private CompoundStatement parseCompoundStatement() throws ParseException, IOException{
-        matchToken(TokenType.LSQBRACE);
+        matchToken(TokenType.LBRACE);
         List<VariableDeclaration> localDeclarations = parseLocalDeclarations();
         List<Statement> statements = parseStatementList();
-        matchToken(TokenType.RSQBRACE);
+        matchToken(TokenType.RBRACE);
         
         return new CompoundStatement(localDeclarations, statements);
     }
@@ -154,12 +162,13 @@ public class CMinusParser implements Parser{
         String id = matchToken(TokenType.IDENTIFIER);
         boolean isArray = false;
         int numElements = 0;
-        if(current.getTokenType() == TokenType.LBRACE){
-            matchToken(TokenType.LBRACE);
+        if(current.getTokenType() == TokenType.LSQBRACE){
+            matchToken(TokenType.LSQBRACE);
             isArray = true;
             numElements = Integer.parseInt(matchToken(TokenType.NUMBER));
-            matchToken(TokenType.RBRACE);
+            matchToken(TokenType.RSQBRACE);
         }
+        matchToken(TokenType.SEMICOLON);
         
         return new VariableDeclaration(isArray, numElements, id);
     }
@@ -173,7 +182,9 @@ public class CMinusParser implements Parser{
             Scanner scanner = new CMinusLexer(in);
             Parser parser = new CMinusParser(scanner);
             
-            parser.parse().print(new PrintWriter(System.out), "");
+            PrintWriter p = new PrintWriter(System.out);
+            parser.parse().print(p, "");
+            p.flush();
             
         } catch (FileNotFoundException ex) {
             Logger.getLogger(CMinusScanner.class.getName())
@@ -181,6 +192,8 @@ public class CMinusParser implements Parser{
         } catch (IOException ex) {
             Logger.getLogger(CMinusScanner.class.getName())
                     .log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(CMinusParser.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
                 in.close();
@@ -195,11 +208,13 @@ public class CMinusParser implements Parser{
     private Token advanceToken() throws IOException{
         Token old = current;
         current = !pushback.isEmpty() ? pushback.pop() : scanner.getNextToken();
+        System.out.println(current);
         return old;
     }
     
     private void rollbackToken(Token t){
-        pushback.push(t);
+        pushback.push(current);
+        current = t;
     }
     
     private String matchToken(TokenType tt) throws ParseException, IOException{
@@ -219,12 +234,40 @@ public class CMinusParser implements Parser{
                 matchToken(TokenType.RPAREN);
                 return returnExpr;
             case IDENTIFIER:
-                return new IdentifierExpression(matchToken(TokenType.IDENTIFIER));
+                String id = matchToken(TokenType.IDENTIFIER);
+                switch(current.getTokenType()){
+                    case LSQBRACE:
+                        matchToken(TokenType.LSQBRACE);
+                        Expression e = parseExpression();
+                        matchToken(TokenType.RSQBRACE);
+                        return new IdentifierExpression(id, e);
+                    case LPAREN:
+                        matchToken(TokenType.LPAREN);
+                        List<Expression> args = parseArgs();
+                        matchToken(TokenType.RPAREN);
+                        return new CallExpression(id, args);
+                    default:
+                        return new IdentifierExpression(id);
+                }
             case NUMBER:
                 return new NumExpression(Integer.parseInt(matchToken(TokenType.NUMBER)));
             default:
                 throw new ParseException("Got unexpected token while parsing factor: " + current);
         }
+    }
+    
+    private List<Expression> parseArgs() throws ParseException, IOException{
+        List<Expression> args = new ArrayList<>();
+        if(current.getTokenType() == TokenType.NUMBER ||
+           current.getTokenType() == TokenType.LPAREN ||
+           current.getTokenType() == TokenType.IDENTIFIER){
+           args.add(parseExpression());
+        }
+        while(current.getTokenType() == TokenType.COMMA){
+            matchToken(TokenType.COMMA);
+            args.add(parseExpression());
+        }
+        return args;
     }
     
     // Given in PPT
@@ -271,6 +314,8 @@ public class CMinusParser implements Parser{
             case RETURN:
                 Statement returnStatement = parseReturnStatement ();
                 return returnStatement;
+            case LBRACE:
+                return parseCompoundStatement();
             default:
                 throw new ParseException("Unexpected token, " + current);
         }        
@@ -318,7 +363,6 @@ public class CMinusParser implements Parser{
                 current.getTokenType() == TokenType.LPAREN ||
                 current.getTokenType() == TokenType.IDENTIFIER) {
             Expression retExpr = parseExpression();
-            advanceToken();
             stmt = new ReturnStatement(retExpr);            
         } else if (current.getTokenType() == TokenType.SEMICOLON) {
             stmt = new ReturnStatement(); 
@@ -347,29 +391,87 @@ public class CMinusParser implements Parser{
                         break;
                     case LPAREN:
                         rollbackToken(idToken);
-                        e = parseSimpleExpression();
+                        e = parseFactor();
                         break;
-                    case LBRACE:
-                        // TODO: When you get brace in expression`
+                    case LSQBRACE:
+                        matchToken(TokenType.LSQBRACE);
+                        IdentifierExpression ie = new IdentifierExpression(id, parseExpression());
+                        matchToken(TokenType.RSQBRACE);
                         
                         // expression``
-                        switch(current.getTokenType()){
-                            case ASSIGN:
-                                matchToken(TokenType.ASSIGN);
-                                //TODO how to bulid assign expression for arrays
-                                break;
-                            case MULTIPLY:
-                            case DIVIDE:
-                                rollbackToken(idToken);
-                                e = parseSimpleExpression();
+                        if(current.getTokenType() == TokenType.ASSIGN){
+                            matchToken(TokenType.ASSIGN);
+                            e = new AssignExpression(ie, parseExpression());
+                        } else if (current.getTokenType().isInGroup(TokenType.Group.RELOP) ||
+                                   current.getTokenType().isInGroup(TokenType.Group.ADDOP) ||
+                                   current.getTokenType().isInGroup(TokenType.Group.MULOP)){
+                            
+                            e = parseSimpleExpressionPrime(ie);
+                        } else if (current.getTokenType() == TokenType.SEMICOLON){
+                            //Do nothing and just leave
+                        }else {
+                            throw new ParseException("Unexpected Token: " + current);
                         }
-                        break;
+                    default:
+                        if(current.getTokenType().isInGroup(TokenType.Group.RELOP) ||
+                           current.getTokenType().isInGroup(TokenType.Group.ADDOP) ||
+                           current.getTokenType().isInGroup(TokenType.Group.MULOP)){
+                            parseSimpleExpressionPrime(new IdentifierExpression(id));
+                        }
                         
                 }
                 break;
             default:
                 throw new ParseException("Unexpected token, " + current);
         }    
+        
+        return e;
+    }
+    
+    private Expression parseSimpleExpressionPrime(IdentifierExpression ie) throws IOException, ParseException{
+        Expression e = null;
+        if(current.getTokenType().isInGroup(TokenType.Group.RELOP)){
+            TokenType op = current.getTokenType();
+            advanceToken();
+            e = new BinaryExpression(ie, parseAdditiveExpression(), op);
+        } else if (current.getTokenType().isInGroup(TokenType.Group.ADDOP) ||
+                   current.getTokenType().isInGroup(TokenType.Group.MULOP)){
+            e = parseAdditiveExpressionPrime(ie);
+        } else {
+            throw new ParseException("Unexpected token, " + current);
+        }
+        return e;
+    }
+    
+    private Expression parseAdditiveExpressionPrime(IdentifierExpression ie) throws IOException, ParseException{
+        Expression lhs = ie;
+
+        if(current.getTokenType().isInGroup(TokenType.Group.ADDOP)){
+            while (current.getTokenType().isInGroup(TokenType.Group.ADDOP)) {
+                Token oldToken = advanceToken();
+                Expression rhs = parseTerm();
+                    // make lhs the result, so set up for next iter
+                lhs = new BinaryExpression(lhs, rhs, oldToken.getTokenType());               
+            }    
+        } else if (current.getTokenType().isInGroup(TokenType.Group.MULOP)){
+            lhs = parseTermPrime(ie);
+        }
+        
+
+        return lhs;
+    }
+    
+    private Expression parseTermPrime(IdentifierExpression ie) throws IOException, ParseException{
+        Expression lhs = ie;
+
+        while (current.getTokenType().isInGroup(TokenType.Group.MULOP)) {
+            Token oldToken = advanceToken();
+            Expression rhs = parseFactor();
+                // make lhs the result, so set up for next iter
+            lhs = new BinaryExpression(lhs, rhs, oldToken.getTokenType());               
+        }
+
+        return lhs; 
     }
     
     private Expression parseSimpleExpression() throws IOException, ParseException{
