@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,9 +28,10 @@ public class CMinusParser implements Parser{
 
     Scanner scanner;
     Token current;
+    Stack<Token> pushback = new Stack<>();
     
     public CMinusParser(Scanner s){
-        
+        scanner = s;
     }
     
     @Override
@@ -192,8 +194,12 @@ public class CMinusParser implements Parser{
     
     private Token advanceToken() throws IOException{
         Token old = current;
-        current = scanner.getNextToken();
+        current = !pushback.isEmpty() ? pushback.pop() : scanner.getNextToken();
         return old;
+    }
+    
+    private void rollbackToken(Token t){
+        pushback.push(t);
     }
     
     private String matchToken(TokenType tt) throws ParseException, IOException{
@@ -324,39 +330,69 @@ public class CMinusParser implements Parser{
     }
 
     private Expression parseExpression() throws ParseException, IOException {
+        Expression e = null;
         switch (current.getTokenType()) {
             case NUMBER:
-                return parseSimpleExpression ();
             case LPAREN:
-                matchToken (TokenType.LPAREN);
-                parseExpression();
-                matchToken (TokenType.RPAREN);
-                Expression simpleExpression = parseSimpleExpression ();
-                return simpleExpression;
+                e = parseSimpleExpression();
+                break;
             case IDENTIFIER:
-                Expression expressionPrime = parseExpressionPrime ();
-                return expressionPrime;
+                // expression`
+                Token idToken = current;
+                String id = matchToken(TokenType.IDENTIFIER);
+                switch(current.getTokenType()){
+                    case ASSIGN:
+                        matchToken(TokenType.ASSIGN);
+                        e = new AssignExpression(id, parseExpression());
+                        break;
+                    case LPAREN:
+                        rollbackToken(idToken);
+                        e = parseSimpleExpression();
+                        break;
+                    case LBRACE:
+                        // TODO: When you get brace in expression`
+                        
+                        // expression``
+                        switch(current.getTokenType()){
+                            case ASSIGN:
+                                matchToken(TokenType.ASSIGN);
+                                //TODO how to bulid assign expression for arrays
+                                break;
+                            case MULTIPLY:
+                            case DIVIDE:
+                                rollbackToken(idToken);
+                                e = parseSimpleExpression();
+                        }
+                        break;
+                        
+                }
+                break;
             default:
                 throw new ParseException("Unexpected token, " + current);
         }    
     }
-
-    private Expression parseSimpleExpression() throws IOException {
-        Expression addExpression = parseAdditiveExpressionPrime();
-        
+    
+    private Expression parseSimpleExpression() throws IOException, ParseException{
+        Expression lhs = parseAdditiveExpression();
         if(current.getTokenType().isInGroup(TokenType.Group.RELOP)){
+            TokenType op = current.getTokenType();
             advanceToken();
-            Expression addExp = parseAdditiveExpression();
+            lhs = new BinaryExpression(lhs, parseAdditiveExpression(), op);
         }
-        return addExpression;
+        return lhs;
     }
+    
+    private Expression parseAdditiveExpression() throws IOException, ParseException{
+        Expression lhs = parseTerm();
 
-    private Expression parseExpressionPrime() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+        while (current.getTokenType().isInGroup(TokenType.Group.ADDOP)) {
+            Token oldToken = advanceToken();
+            Expression rhs = parseTerm();
+                // make lhs the result, so set up for next iter
+            lhs = new BinaryExpression(lhs, rhs, oldToken.getTokenType());               
+        }
 
-    private Expression parseAdditiveExpression() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return lhs;   
     }
 
 }
