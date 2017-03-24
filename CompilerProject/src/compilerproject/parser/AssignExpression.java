@@ -22,14 +22,17 @@ public class AssignExpression extends Expression {
     }
     
     public AssignExpression(IdentifierExpression ident, Expression v){
+        if(ident == null || v == null){
+            throw new InvalidParameterError();
+        }
         id = ident;
         value = v;
     }
 
     @Override
     public void print(PrintWriter writer, String tabs) throws IOException {
-        writer.write(tabs+"=");
-        writer.write(tabs+"    "+id);
+        writer.write(tabs+"=\n");
+        writer.write(tabs+"    "+id+"\n");
         value.print(writer, "    "+tabs);
     }   
     

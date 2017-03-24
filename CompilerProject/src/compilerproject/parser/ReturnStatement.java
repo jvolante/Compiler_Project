@@ -27,7 +27,7 @@ public class ReturnStatement extends Statement {
 
     @Override
     public void print(PrintWriter writer, String tabs) throws IOException {
-        writer.write(tabs+"return");
+        writer.write(tabs+"return\n");
         returnExpression.print(writer, tabs+"    ");
     }
 }

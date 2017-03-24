@@ -63,7 +63,7 @@ public class BinaryExpression extends Expression{
     
     @Override
     public void print(PrintWriter writer, String tabs) throws IOException{
-        writer.write(tabs+getString(op));
+        writer.write(tabs+getString(op)+"\n");
         left.print(writer, tabs+"    ");
         right.print(writer, tabs+ "    ");
     }

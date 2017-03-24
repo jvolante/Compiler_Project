@@ -25,7 +25,7 @@ public class ItterationStatement extends Statement {
 
     @Override
     public void print(PrintWriter writer, String tabs) throws IOException {
-        writer.write(tabs+"while");
+        writer.write(tabs+"while\n");
         loopCondition.print(writer, tabs+"    ");
         statement.print(writer, tabs+"    ");
     }

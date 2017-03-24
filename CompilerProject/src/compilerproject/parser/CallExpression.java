@@ -25,7 +25,7 @@ public class CallExpression extends Expression{
     
     @Override
     public void print(PrintWriter writer, String tabs) throws IOException {
-        writer.write(tabs+id);
+        writer.write(tabs+id+"\n");
         for (Expression arg : args){
             arg.print(writer, tabs+"    ");
         }

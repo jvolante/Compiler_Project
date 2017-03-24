@@ -21,7 +21,7 @@ public class NumExpression extends Expression{
     }
     @Override
     public void print(PrintWriter writer, String tabs) throws IOException {
-        writer.write(tabs+value);
+        writer.write(tabs+value+"\n");
     }
     
 }

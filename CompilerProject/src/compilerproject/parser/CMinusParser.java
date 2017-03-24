@@ -89,7 +89,12 @@ public class CMinusParser implements Parser{
         matchToken(TokenType.VOID);
         String id = matchToken(TokenType.IDENTIFIER);
         matchToken(TokenType.LPAREN);
-        List<Parameter> params = parseParameters();
+        List<Parameter> params = new ArrayList<>();
+        if(current.getTokenType() == TokenType.VOID){
+            matchToken(TokenType.VOID);
+        } else {
+            params = parseParameters();
+        }
         matchToken(TokenType.RPAREN);
         CompoundStatement cs = parseCompoundStatement();
         
@@ -176,7 +181,7 @@ public class CMinusParser implements Parser{
     public static void main(String[] args){
         FileReader in = null;
         try {
-            String filename = "C:\\Users\\jvolante\\Downloads\\selectionSort.cpp";
+            String filename = "D:\\Downloads\\selectionSort.cpp";
             in = new FileReader(filename);
             
             Scanner scanner = new CMinusLexer(in);
@@ -208,7 +213,6 @@ public class CMinusParser implements Parser{
     private Token advanceToken() throws IOException{
         Token old = current;
         current = !pushback.isEmpty() ? pushback.pop() : scanner.getNextToken();
-        System.out.println(current);
         return old;
     }
     
@@ -258,10 +262,12 @@ public class CMinusParser implements Parser{
     
     private List<Expression> parseArgs() throws ParseException, IOException{
         List<Expression> args = new ArrayList<>();
+        Expression arg;
         if(current.getTokenType() == TokenType.NUMBER ||
            current.getTokenType() == TokenType.LPAREN ||
            current.getTokenType() == TokenType.IDENTIFIER){
-           args.add(parseExpression());
+            arg = parseExpression();
+            args.add(arg);
         }
         while(current.getTokenType() == TokenType.COMMA){
             matchToken(TokenType.COMMA);
@@ -408,15 +414,21 @@ public class CMinusParser implements Parser{
                             
                             e = parseSimpleExpressionPrime(ie);
                         } else if (current.getTokenType() == TokenType.SEMICOLON){
-                            //Do nothing and just leave
+                            e = ie;
                         }else {
                             throw new ParseException("Unexpected Token: " + current);
                         }
+                        break;
+                    case SEMICOLON:
+                    case COMMA:
+                    case RPAREN:
+                        e = new IdentifierExpression(id);
+                        break;
                     default:
                         if(current.getTokenType().isInGroup(TokenType.Group.RELOP) ||
                            current.getTokenType().isInGroup(TokenType.Group.ADDOP) ||
                            current.getTokenType().isInGroup(TokenType.Group.MULOP)){
-                            parseSimpleExpressionPrime(new IdentifierExpression(id));
+                            e = parseSimpleExpressionPrime(new IdentifierExpression(id));
                         }
                         
                 }

@@ -31,9 +31,12 @@ public class IfStatement extends Statement {
 
     @Override
     public void print(PrintWriter writer, String tabs) throws IOException {
-        writer.write(tabs+"if");
+        writer.write(tabs+"if\n");
         expr.print(writer, tabs+"    ");
         thenStmt.print(writer, tabs+"    ");
-        elseStmt.print(writer, tabs+"    ");
+        
+        if(elseStmt != null){
+            elseStmt.print(writer, tabs+"    ");
+        }
     }
 }
