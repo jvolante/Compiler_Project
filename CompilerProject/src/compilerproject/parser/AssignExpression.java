@@ -32,7 +32,7 @@ public class AssignExpression extends Expression {
     @Override
     public void print(PrintWriter writer, String tabs) throws IOException {
         writer.write(tabs+"=\n");
-        writer.write(tabs+"    "+id+"\n");
+        id.print(writer, tabs);
         value.print(writer, "    "+tabs);
     }   
     
