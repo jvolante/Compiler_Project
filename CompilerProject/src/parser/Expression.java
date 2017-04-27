@@ -8,6 +8,8 @@ package parser;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import lowlevel.CodeItem;
+import lowlevel.Function;
 
 /**
  *
@@ -15,4 +17,7 @@ import java.io.PrintWriter;
  */
 public abstract class Expression {
     public abstract void print(PrintWriter writer, String tabs) throws IOException;
+    protected int regNum;
+
+    public abstract CodeItem genCode(Function fun);
 }

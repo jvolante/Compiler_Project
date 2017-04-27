@@ -10,6 +10,11 @@ import scanner.TokenType;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import lowlevel.CodeItem;
+import lowlevel.Function;
+import lowlevel.Operand;
+import lowlevel.Operand.OperandType;
+import lowlevel.Operation;
 
 /**
  *
@@ -90,6 +95,46 @@ public class BinaryExpression extends Expression{
                 return "*";
             case DIV:
                 return "/";
+        }
+        return null;
+    }
+    
+        
+    public CodeItem genCode(Function fun){
+        CodeItem result = null;
+        regNum = fun.getNewRegNum();
+        
+        left.genCode(fun);
+        right.genCode(fun);
+        
+        Operation operation = new Operation(getOperationType(op), fun.getCurrBlock());
+        operation.setDestOperand(0, new Operand(OperandType.REGISTER, regNum));
+        
+        return result;
+    }
+    
+    public Operation.OperationType getOperationType(OpType op){
+        switch(op){
+            case PLUS:
+                return Operation.OperationType.ADD_I;
+            case MINUS:
+                return Operation.OperationType.SUB_I;
+            case GT:
+                return Operation.OperationType.GT;
+            case LT:
+                return Operation.OperationType.LT;
+            case GTEQ:
+                return Operation.OperationType.GTE;
+            case LTEQ:
+                return Operation.OperationType.LTE;
+            case NEQ:
+                return Operation.OperationType.NOT_EQUAL;
+            case EQ:
+                return Operation.OperationType.EQUAL;
+            case MUL:
+                return Operation.OperationType.MUL_I;
+            case DIV:
+                return Operation.OperationType.DIV_I;
         }
         return null;
     }
