@@ -8,6 +8,7 @@ package parser;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import lowlevel.Function;
 
 /**
  *
@@ -25,6 +26,10 @@ public class ExpressionStatement extends Statement {
     public void print(PrintWriter writer, String tabs) throws IOException {
         expr.print(writer, tabs);
     }
-    
+
+    @Override
+    public void genCode(Function f) {
+        expr.genCode(f);
+    }
     
 }

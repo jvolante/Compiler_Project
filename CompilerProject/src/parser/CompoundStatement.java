@@ -9,7 +9,10 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import lowlevel.BasicBlock;
+import lowlevel.Function;
 
 /**
  *
@@ -36,4 +39,21 @@ public class CompoundStatement extends Statement{
         }
         writer.write(tabs + "}\n");
     }
+
+    @Override
+    public void genCode(Function f) {
+        HashMap st = f.getTable();
+        for(VariableDeclaration d : localDeclarations){
+            if(!st.containsKey(d.identifier)){
+                st.put(d.identifier, null);
+            } else {
+                throw new CompileError(d.identifier + " already defined in function " + f.getName());
+            }
+        }
+        
+        for(Statement s : statements){
+            s.genCode(f);
+        }
+    }
+    
 }

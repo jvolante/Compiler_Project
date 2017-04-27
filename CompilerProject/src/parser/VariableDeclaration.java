@@ -5,9 +5,12 @@
  */
 package parser;
 
+import compiler.CMinusCompiler;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import lowlevel.CodeItem;
+import lowlevel.Data;
 
 /**
  *
@@ -32,5 +35,15 @@ public class VariableDeclaration extends Declaration{
             writer.write(" [ " + numElements + " ]");
         }
         writer.write("\n");
+    }
+
+    @Override
+    public CodeItem genCode() {
+        if(isArray){
+            throw new UnsupportedOperationException("Arrays not supported");
+        } else {
+            CMinusCompiler.globalHash.put(identifier, type);
+            return new Data(Data.TYPE_INT, identifier);
+        }
     }
 }

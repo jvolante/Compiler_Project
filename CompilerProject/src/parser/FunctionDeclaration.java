@@ -12,6 +12,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import lowlevel.BasicBlock;
+import lowlevel.CodeItem;
+import lowlevel.Data;
+import lowlevel.FuncParam;
+import lowlevel.Function;
 
 /**
  *
@@ -52,4 +57,26 @@ public class FunctionDeclaration extends Declaration {
         compoundStatement.print(writer, tabs+"    ");
     }
     
+    public CodeItem genCode(){
+        Function f = new Function(type == DataType.INT ? Data.TYPE_INT : Data.TYPE_VOID, identifier);
+        
+        FuncParam first = null;
+        FuncParam current = null;
+        
+        for(Parameter p : params){
+            if(first == null){
+                current = first = new FuncParam(Data.TYPE_INT, p.id);
+            } else{
+                current.setNextParam(new FuncParam(Data.TYPE_INT, p.id));
+            }
+        }
+        
+        f.setFirstParam(first);
+        f.genReturnBlock();
+        f.createBlock0();
+        
+        compoundStatement.genCode(f);
+        
+        return f;
+    }
 }
