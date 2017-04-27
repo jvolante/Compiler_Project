@@ -100,8 +100,8 @@ public class BinaryExpression extends Expression{
     }
     
         
-    public CodeItem genCode(Function fun){
-        CodeItem result = null;
+    @Override
+    public void genCode(Function fun){
         regNum = fun.getNewRegNum();
         
         left.genCode(fun);
@@ -109,8 +109,10 @@ public class BinaryExpression extends Expression{
         
         Operation operation = new Operation(getOperationType(op), fun.getCurrBlock());
         operation.setDestOperand(0, new Operand(OperandType.REGISTER, regNum));
+        operation.setSrcOperand(0, new Operand(OperandType.REGISTER, left.getRegNum()));
+        operation.setSrcOperand(1, new Operand(OperandType.REGISTER, right.getRegNum()));
         
-        return result;
+        fun.getCurrBlock().appendOper(operation);
     }
     
     public Operation.OperationType getOperationType(OpType op){

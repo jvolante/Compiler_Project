@@ -5,9 +5,14 @@
  */
 package parser;
 
+import compiler.CMinusCompiler;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import lowlevel.BasicBlock;
+import lowlevel.Function;
+import lowlevel.Operand;
+import lowlevel.Operation;
 
 /**
  *
@@ -33,6 +38,30 @@ public class IdentifierExpression extends Expression{
             writer.write(tabs + "[\n");
             element.print(writer, tabs+"    ");
             writer.write(tabs + "]\n");
+        }
+    }
+
+    @Override
+    public void genCode(Function f) {
+        BasicBlock currBlock = f.getCurrBlock();
+        
+        if(f.getTable().containsKey(id)){
+            regNum = (Integer)f.getTable().get(id);
+        } else if (CMinusCompiler.globalHash.containsKey(id)){
+            regNum = f.getNewRegNum();
+            Operation o = new Operation(Operation.OperationType.ASSIGN, currBlock);
+            o.setSrcOperand(0, new Operand(Operand.OperandType.STRING, id));
+            o.setDestOperand(0, new Operand(Operand.OperandType.REGISTER, regNum));
+            currBlock.appendOper(o);
+            
+            o = new Operation(Operation.OperationType.ASSIGN, f.getReturnBlock());
+            
+            o.setDestOperand(0, new Operand(Operand.OperandType.STRING, id));
+            o.setSrcOperand(0, new Operand(Operand.OperandType.REGISTER, regNum));
+            
+            f.getReturnBlock().insertFirst(o);
+        } else {
+            throw new Error("No such var " + id);
         }
     }
 }

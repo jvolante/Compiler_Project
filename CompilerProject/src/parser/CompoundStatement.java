@@ -45,7 +45,7 @@ public class CompoundStatement extends Statement{
         HashMap st = f.getTable();
         for(VariableDeclaration d : localDeclarations){
             if(!st.containsKey(d.identifier)){
-                st.put(d.identifier, null);
+                st.put(d.identifier, f.getNewRegNum());
             } else {
                 throw new CompileError(d.identifier + " already defined in function " + f.getName());
             }

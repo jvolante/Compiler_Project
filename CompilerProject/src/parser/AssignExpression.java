@@ -8,6 +8,10 @@ package parser;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import lowlevel.BasicBlock;
+import lowlevel.Function;
+import lowlevel.Operand;
+import lowlevel.Operation;
 
 /**
  *
@@ -35,5 +39,19 @@ public class AssignExpression extends Expression {
         id.print(writer, tabs);
         value.print(writer, "    "+tabs);
     }   
+
+    @Override
+    public void genCode(Function f) {
+        id.genCode(f);
+        value.genCode(f);
+        
+        BasicBlock currBlock = f.getCurrBlock();
+        Operation o = new Operation(Operation.OperationType.ASSIGN, currBlock);
+        
+        o.setDestOperand(0, new Operand(Operand.OperandType.REGISTER,id.getRegNum()));
+        o.setSrcOperand(0, new Operand(Operand.OperandType.REGISTER,value.getRegNum()));
+        
+        currBlock.appendOper(o);
+    }
     
 }
