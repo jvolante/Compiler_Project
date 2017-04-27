@@ -14,5 +14,7 @@ import java.io.PrintWriter;
  * @author jtdeane
  */
 public abstract class Expression {
+    protected int regNum;
     public abstract void print(PrintWriter writer, String tabs) throws IOException;
+    public abstract void genCode(Function f);
 }
