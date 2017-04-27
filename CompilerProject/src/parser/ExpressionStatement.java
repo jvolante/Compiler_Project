@@ -34,3 +34,51 @@ public class ExpressionStatement extends Statement {
     }
     
 }
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+/**
+ *
+ * @author jvolante
+ */
+public class ExpressionStatement extends Statement {
+    Expression expr;
+    
+    public ExpressionStatement(Expression e){
+        type = StatementType.EXPRESSION;
+        expr = e;
+    }
+
+    @Override
+    public void print(PrintWriter writer, String tabs) throws IOException {
+        expr.print(writer, tabs);
+    }
+    
+    
+}
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import lowlevel.CodeItem;
+
+/**
+ *
+ * @author jvolante
+ */
+public class ExpressionStatement extends Statement {
+    Expression expr;
+    
+    public ExpressionStatement(Expression e){
+        type = StatementType.EXPRESSION;
+        expr = e;
+    }
+
+    @Override
+    public void print(PrintWriter writer, String tabs) throws IOException {
+        expr.print(writer, tabs);
+    }
+        
+}

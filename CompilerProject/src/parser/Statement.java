@@ -8,7 +8,6 @@ package parser;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import lowlevel.Function;
 import lowlevel.CodeItem;
 
 /**
@@ -24,5 +23,4 @@ public abstract class Statement {
     
     public abstract void print(PrintWriter writer, String tabs) throws IOException;
     
-    public abstract void genCode(Function f);
 }
