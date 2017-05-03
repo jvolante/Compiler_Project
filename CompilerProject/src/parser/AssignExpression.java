@@ -42,14 +42,26 @@ public class AssignExpression extends Expression {
 
     @Override
     public void genCode(Function f) {
-        id.genCode(f);
+        Operand dest = null;
+        Operation o = null;
+        BasicBlock currBlock = f.getCurrBlock();
+        
         value.genCode(f);
         
-        BasicBlock currBlock = f.getCurrBlock();
-        Operation o = new Operation(Operation.OperationType.ASSIGN, currBlock);
-        
-        o.setDestOperand(0, new Operand(Operand.OperandType.REGISTER,id.getRegNum()));
-        o.setSrcOperand(0, new Operand(Operand.OperandType.REGISTER,value.getRegNum()));
+        if(!id.isGlobal(f)){
+            id.genCode(f);
+            o = new Operation(Operation.OperationType.ASSIGN, currBlock);
+            dest = new Operand(Operand.OperandType.REGISTER, id.getRegNum());
+            o.setSrcOperand(0, new Operand(Operand.OperandType.REGISTER, value.getRegNum()));
+            o.setDestOperand(0, dest);
+            regNum = id.getRegNum();
+        } else {
+            o = new Operation(Operation.OperationType.STORE_I, currBlock);
+            dest = new Operand(Operand.OperandType.STRING, id.id);
+            o.setSrcOperand(0, new Operand(Operand.OperandType.REGISTER, value.getRegNum()));
+            o.setSrcOperand(1, dest);
+            regNum = value.getRegNum();
+        }
         
         currBlock.appendOper(o);
     }

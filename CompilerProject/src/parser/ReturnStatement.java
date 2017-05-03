@@ -32,7 +32,9 @@ public class ReturnStatement extends Statement {
     @Override
     public void print(PrintWriter writer, String tabs) throws IOException {
         writer.write(tabs+"return\n");
-        returnExpression.print(writer, tabs+"    ");
+        if(returnExpression != null){
+            returnExpression.print(writer, tabs+"    ");
+        }
     }
 
     @Override
@@ -44,13 +46,13 @@ public class ReturnStatement extends Statement {
             returnExpression.genCode(f);
             
             o = new Operation(Operation.OperationType.ASSIGN, currBlock);
-            o.setDestOperand(0, new Operand(Operand.OperandType.MACRO, "eax"));
+            o.setDestOperand(0, new Operand(Operand.OperandType.MACRO, "RetReg"));
             o.setSrcOperand(0, new Operand(Operand.OperandType.REGISTER, returnExpression.getRegNum()));
             f.getCurrBlock().appendOper(o);
         }
         
         o = new Operation(Operation.OperationType.JMP, currBlock);
-        o.setDestOperand(0, new Operand(Operand.OperandType.BLOCK, f.getReturnBlock().getBlockNum()));
+        o.setSrcOperand(0, new Operand(Operand.OperandType.BLOCK, f.getReturnBlock().getBlockNum()));
         
         currBlock.appendOper(o);
     }

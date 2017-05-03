@@ -56,13 +56,14 @@ public class IfStatement extends Statement {
         BasicBlock currBlock = f.getCurrBlock();
         
         // conditional branch
-        Operation o = new Operation(Operation.OperationType.BNE, currBlock);
+        Operation o = new Operation(Operation.OperationType.BEQ, currBlock);
         
         o.setSrcOperand(0, new Operand(Operand.OperandType.REGISTER, expr.getRegNum()));
         o.setSrcOperand(1, new Operand(Operand.OperandType.INTEGER, 0));
         o.setSrcOperand(2, new Operand(Operand.OperandType.BLOCK, 
                 elseStmt == null ? postBlock.getBlockNum() : elseBlock.getBlockNum()));
         
+        currBlock.appendOper(o);
         
         f.appendToCurrentBlock(thenBlock);
         f.setCurrBlock(thenBlock);
@@ -74,9 +75,9 @@ public class IfStatement extends Statement {
             
             f.setCurrBlock(elseBlock);
             elseStmt.genCode(f);
-            o = new Operation(Operation.OperationType.JMP, elseBlock);
+            o = new Operation(Operation.OperationType.JMP, postBlock);
             o.setSrcOperand(0, new Operand(Operand.OperandType.BLOCK, postBlock.getBlockNum()));
-            elseBlock.appendOper(o);
+            f.getCurrBlock().appendOper(o);
             
             f.appendUnconnectedBlock(elseBlock);
         }

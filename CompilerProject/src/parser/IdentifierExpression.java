@@ -6,7 +6,6 @@
 package parser;
 
 import compiler.CMinusCompiler;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import lowlevel.BasicBlock;
@@ -49,19 +48,20 @@ public class IdentifierExpression extends Expression{
             regNum = (Integer)f.getTable().get(id);
         } else if (CMinusCompiler.globalHash.containsKey(id)){
             regNum = f.getNewRegNum();
-            Operation o = new Operation(Operation.OperationType.ASSIGN, currBlock);
+            Operation o = new Operation(Operation.OperationType.LOAD_I, currBlock);
             o.setSrcOperand(0, new Operand(Operand.OperandType.STRING, id));
             o.setDestOperand(0, new Operand(Operand.OperandType.REGISTER, regNum));
             currBlock.appendOper(o);
             
-            o = new Operation(Operation.OperationType.ASSIGN, f.getReturnBlock());
-            
-            o.setDestOperand(0, new Operand(Operand.OperandType.STRING, id));
-            o.setSrcOperand(0, new Operand(Operand.OperandType.REGISTER, regNum));
-            
-            f.getReturnBlock().insertFirst(o);
         } else {
             throw new Error("No such var " + id);
         }
+    }
+    
+    public boolean isGlobal(Function f){
+        if(!f.getTable().containsKey(id) && !CMinusCompiler.globalHash.containsKey(id)){
+            throw new Error("No such var " + id);
+        }
+        return !f.getTable().containsKey(id) && CMinusCompiler.globalHash.containsKey(id);
     }
 }

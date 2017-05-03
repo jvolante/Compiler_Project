@@ -68,14 +68,29 @@ public class FunctionDeclaration extends Declaration {
                 current = first = new FuncParam(Data.TYPE_INT, p.id);
             } else{
                 current.setNextParam(new FuncParam(Data.TYPE_INT, p.id));
+                current = current.getNextParam();
+                f.getTable().put(p.id, f.getNewRegNum());
             }
+            
+            f.getTable().put(p.id, f.getNewRegNum());
         }
         
         f.setFirstParam(first);
-        f.genReturnBlock();
         f.createBlock0();
         
+        BasicBlock block1 = new BasicBlock(f);
+        
+        f.appendBlock(block1);
+        
+        f.setCurrBlock(block1);
+        
         compoundStatement.genCode(f);
+        
+        f.appendBlock(f.getReturnBlock());
+        
+        if(f.getFirstUnconnectedBlock() != null){
+            f.appendBlock(f.getFirstUnconnectedBlock());
+        }
         
         return f;
     }

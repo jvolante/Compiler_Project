@@ -114,6 +114,8 @@ public class CMinusParser implements Parser{
                 matchToken(TokenType.COMMA);
                 params.add(parseParameter());
             }
+        } else if (current.getTokenType() == TokenType.VOID){
+            matchToken(TokenType.VOID);
         }
         
         return params;
