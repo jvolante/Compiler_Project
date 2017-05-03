@@ -8,6 +8,10 @@ package parser;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import lowlevel.BasicBlock;
+import lowlevel.Function;
+import lowlevel.Operand;
+import lowlevel.Operation;
 
 /**
  *
@@ -38,5 +42,45 @@ public class IfStatement extends Statement {
         if(elseStmt != null){
             elseStmt.print(writer, tabs+"    ");
         }
+    }
+
+    @Override
+    public void genCode(Function f) {
+        // make blocks that we need
+        BasicBlock thenBlock = new BasicBlock(f);
+        BasicBlock elseBlock = new BasicBlock(f);
+        BasicBlock postBlock = new BasicBlock(f);
+        
+        expr.genCode(f);
+        
+        BasicBlock currBlock = f.getCurrBlock();
+        
+        // conditional branch
+        Operation o = new Operation(Operation.OperationType.BNE, currBlock);
+        
+        o.setSrcOperand(0, new Operand(Operand.OperandType.REGISTER, expr.getRegNum()));
+        o.setSrcOperand(1, new Operand(Operand.OperandType.INTEGER, 0));
+        o.setSrcOperand(2, new Operand(Operand.OperandType.BLOCK, 
+                elseStmt == null ? postBlock.getBlockNum() : elseBlock.getBlockNum()));
+        
+        
+        f.appendToCurrentBlock(thenBlock);
+        f.setCurrBlock(thenBlock);
+        thenStmt.genCode(f);
+        
+        f.appendToCurrentBlock(postBlock);
+        
+        if(elseStmt != null){
+            
+            f.setCurrBlock(elseBlock);
+            elseStmt.genCode(f);
+            o = new Operation(Operation.OperationType.JMP, elseBlock);
+            o.setSrcOperand(0, new Operand(Operand.OperandType.BLOCK, postBlock.getBlockNum()));
+            elseBlock.appendOper(o);
+            
+            f.appendUnconnectedBlock(elseBlock);
+        }
+        
+        f.setCurrBlock(postBlock);
     }
 }
